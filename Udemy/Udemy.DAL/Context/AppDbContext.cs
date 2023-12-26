@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using Udemy.CORE.Entities;
 
 namespace Udemy.DAL.Context
 {
-    public class AppDbContext:DbContext
+    public class AppDbContext: IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
@@ -22,6 +23,7 @@ namespace Udemy.DAL.Context
                        .HasOne(s => s.Parent)
                        .WithMany(m => m.Children)
                        .HasForeignKey(e => e.ParentId);
+                
             base.OnModelCreating(modelBuilder);
         }
         public DbSet<Category> Categories { get; set; }

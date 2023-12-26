@@ -1,27 +1,40 @@
 using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System;
+using Udemy.BUSINESS.DTOs.RegisterDtos;
+using Udemy.BUSINESS.Services.Implementations;
+using Udemy.BUSINESS.Services.Interfaces;
+using Udemy.CORE.Entities;
 using Udemy.DAL.Context;
+using Udemy.DAL.Repositories.Implementations;
+using Udemy.DAL.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-/*
-builder.Services.AddTransient<IValidator<CategoryCreateDto>, CategoryCreateDtoValidator>();
-builder.Services.AddTransient<IValidator<UpdateCategoryDto>, CategoryUpdateDtoValidator>();
-builder.Services.AddTransient<IValidator<CreateStudentDto>, StudentCreateDtoValidator>();
-builder.Services.AddTransient<IValidator<UpdateStudentDto>, StudentUpdateDtoValidator>();
-builder.Services.AddTransient<IValidator<CreateTeacherDto>, TeacherCreateDtoValidator>();
-builder.Services.AddTransient<IValidator<UpdateTeacherDto>, TeacherUpdateDtoValidator>();
-builder.Services.AddTransient<IValidator<CreateCourseDto>, CourseCreateDtoValidator>();
-builder.Services.AddTransient<IValidator<UpdateCourseDto>, CourseUpdateDtoValidator>();*/
-builder.Services.AddControllers();
+
+//builder.Services.AddAutoMapper();
+builder.Services.AddControllers().AddFluentValidation(opt =>
+{
+    opt.RegisterValidatorsFromAssembly(typeof(RegisterDtoValidation).Assembly);
+});
+builder.Services.AddScoped<IRegisterService, RegisterService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+{
+    opt.Password.RequireNonAlphanumeric = true;
+}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 var app = builder.Build();
 
