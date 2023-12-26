@@ -7,7 +7,7 @@ using Udemy.BUSINESS.Entities.Base;
 
 namespace Udemy.BUSINESS.DTOs.CategoryDtos
 {
-    internal class CategoryGetDto:BaseAuditableEntityDto
+    public class CategoryGetDto:BaseAuditableEntityDto
     {
         public string Title { get; set; }
         public int? ParentId { get; set; }

@@ -22,7 +22,7 @@ namespace Udemy.DAL.Repositories.Implementations
 
         public DbSet<T> Table => _context.Set<T>();
 
-        public async Task<bool> Check(int? id)
+        public async Task<bool> Check(int id)
         {
             return await Table.AnyAsync(a=>a.Id == id);
         }
@@ -96,7 +96,7 @@ namespace Udemy.DAL.Repositories.Implementations
 
         }
 
-        public void Save()
+        public void SaveChangesAsync()
         {
             _context.SaveChanges();
         }

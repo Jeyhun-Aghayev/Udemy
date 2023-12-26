@@ -23,7 +23,7 @@ namespace Udemy.DAL.Repositories.Interfaces
         void Restore();
         Task<bool> Check(int id);
 
-        void Save();
+        void SaveChangesAsync();
 
     }
 }

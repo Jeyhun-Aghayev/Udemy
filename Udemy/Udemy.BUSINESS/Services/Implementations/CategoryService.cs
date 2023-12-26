@@ -1,18 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Udemy.BUSINESS.DTOs.CategoryDtos;
+using Udemy.BUSINESS.Services.Interfaces;
 using Udemy.CORE.Entities;
 using Udemy.DAL.Repositories.Interfaces;
 
 namespace Udemy.BUSINESS.Services.Implementations
 {
-    public class CategoryService
+    public class CategoryService: ICategoryService
     {
         private readonly ICategoryRepository _repo;
+        private readonly IMapper _mapper;
 
         public CategoryService(ICategoryRepository repo)
         {
@@ -29,25 +32,26 @@ namespace Udemy.BUSINESS.Services.Implementations
                 ParentId = createCategoryDto.ParentId
             };
             await _repo.Create(category);
-            _repo.Save();
+            _repo.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
         {
              _repo.Delete(id);
-             _repo.Save();
+             _repo.SaveChangesAsync();
         }
 
-        public async Task<ICollection<Category>> GetAllAsync()
+        public async Task<IQueryable<CategoryGetDto>> GetAllAsync()
         {
             var categories = await _repo.GetAllAsync();
-            return await categories.ToListAsync();
+            IQueryable<CategoryGetDto> get = _mapper.Map<IQueryable<CategoryGetDto>>(categories);
+            return get;
         }
 
-        public async Task<Category> GetById(int id)
+        public async Task<CategoryGetDto> GetById(int id)
         {
             if (id <= 0) throw new Exception("Bad Request");
-            return await _repo.GetById(id);
+            return _mapper.Map<CategoryGetDto>(await _repo.GetById(id));
         }
 
         public async Task<ICollection<Category>> RecycleBin()
@@ -78,18 +82,17 @@ namespace Udemy.BUSINESS.Services.Implementations
                 existingCategory.LogoUrl = updateCategoryDto.LogoImg.UploadFile(folderName: "C:\\Users\\User\\Desktop\\Repos\\Api_Ntire\\App.BUSINESS\\Upload\\");
             }*/
             _repo.Update(existingCategory);
-            _repo.Save();
+            _repo.SaveChangesAsync();
         }
         public async Task Restore()
         {
             _repo.Restore();
-            _repo.Save();
+            _repo.SaveChangesAsync();
         }
-
-        public async Task deleteAll()
+        public async Task DeleteAll()
         {
             _repo.DeleteAll();
-            _repo.Save();
+            _repo.SaveChangesAsync();
         }
     }
 }
