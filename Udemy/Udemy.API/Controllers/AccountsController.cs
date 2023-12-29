@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Udemy.BUSINESS.DTOs.RegisterDtos;
+using Udemy.BUSINESS.DTOs.AccountDtos;
 using Udemy.BUSINESS.Services.Interfaces;
 
 namespace Udemy.API.Controllers
@@ -9,24 +9,31 @@ namespace Udemy.API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IRegisterService _userService;
+        private readonly IAccountService _accountService;
 
-        public AccountsController(IRegisterService userService)
+        public AccountsController(IAccountService ccountService)
         {
-            _userService = userService;
+            _accountService = ccountService;
         }
-        [HttpPost("register")]
+
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] RegisterDto appUserDto)
         {
-            var result = await _userService.RegisterUserAsync(appUserDto);
+            var result = await _accountService.Register(appUserDto);
 
             if (result.Succeeded)
             {
-                return Ok("Registration successful");
+                return Ok("Registration successfull");
             }
 
             return BadRequest(result.Errors);
         }
-
+        
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromForm] LoginDto loginDto)
+        {
+            var result = await _accountService.Login(loginDto);
+            return Ok(result);
+        }
     }
 }

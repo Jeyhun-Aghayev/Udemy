@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Udemy.BUSINESS.DTOs.RegisterDtos
+namespace Udemy.BUSINESS.DTOs.AccountDtos
 {
-    public class RegisterDto
+    public record RegisterDto
     {
         [Required]
         [MaxLength(25)]
